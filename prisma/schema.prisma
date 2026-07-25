@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Report {
+  id           String   @id @default(uuid())
+  latitude     Float
+  longitude    Float
+  dogCount     Int      @map("dog_count")
+  behaviorTag  Behavior @map("behavior_tag")
+  phoneNumber  String?  @map("phone_number")
+  createdAt    DateTime @default(now()) @map("created_at")
+  deviceId     String   @map("device_id")
+
+  @@map("reports")
+}
+
+model Cluster {
+  id                    String         @id @default(uuid()) @map("cluster_id")
+  centerLat             Float          @map("center_lat")
+  centerLng             Float          @map("center_lng")
+  reportCount           Int            @map("report_count")
+  totalDogEstimate      Int            @map("total_dog_estimate")
+  dominantBehaviorTag   Behavior       @map("dominant_behavior_tag")
+  lastReportedAt        DateTime       @map("last_reported_at")
+  status                ClusterStatus  @default(REPORTED)
+
+  @@map("clusters")
+}
+
+enum Behavior {
+  CALM             
+  PUPPIES_PRESENT  
+  AGGRESSIVE       
+  SICK_OR_INJURED  
+}
+
+enum ClusterStatus {
+  REPORTED       
+  ASSIGNED       
+  ACTION_TAKEN   
+  RESOLVED       
+}
